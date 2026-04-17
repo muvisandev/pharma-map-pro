@@ -1,0 +1,176 @@
+/* 1. БАЗОВЫЕ НАСТРОЙКИ ЭКРАНА */
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden; /* Запрещаем скролл всей страницы */
+}
+
+/* 2. ГЛАВНЫЙ КОНТЕЙНЕР */
+.main-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  flex-direction: row;
+  position: relative; /* Создаем систему координат для фиксированных элементов */
+}
+
+/* 3. КОНТЕЙНЕР КАРТЫ */
+.map-container {
+  flex-grow: 1;
+  height: 100%;
+  background-color: #e5e3db;
+  z-index: 1; /* Карта всегда на заднем плане */
+}
+
+/* 4. БОКОВАЯ ПАНЕЛЬ (САЙДБАР) */
+.sidebar {
+  width: 320px;
+  min-width: 320px;
+  height: 100vh;      /* Строго во всю высоту экрана */
+  background: #1F1F1F;
+  border-left: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;   /* Прокрутка только внутри сайдбара */
+  padding: 20px;
+  box-sizing: border-box;
+  z-index: 10;        /* Сайдбар поверх карты */
+}
+
+/* 5. ЗАГОЛОВКИ */
+h4 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  color: #FFFFFF;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
+}
+
+.filter-group {
+  margin-bottom: 25px;
+}
+
+/* 6. ЭЛЕМЕНТЫ ФИЛЬТРОВ */
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #B0C5C6;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.checkbox-item:hover {
+  background: #39494C;
+}
+
+.checkbox-item input {
+  margin-right: 10px;
+}
+
+/* 7. ТЕКСТ "ФАЙЛ НЕ ВЫБРАН" */
+input[type="file"] {
+  color: #ffffff; /* Делает текст названия файла белым */
+  font-size: 12px;
+}
+
+/* Стилизуем кнопку выбора файла */
+input[type="file"]::file-selector-button {
+  background: #34495e;
+  color: white;
+  border: 1px solid #555;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: 0.3s;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: #456789;
+}
+
+/* 8. БЛОК РЕДАКТИРОВАНИЯ (EDIT-BOX) */
+.edit-box {
+  background: #1D2629;
+  padding: 15px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  flex-shrink: 0; /* Не дает блоку сжиматься при зуме */
+}
+
+.edit-box p {
+  color: #ffffff !important; /* Название аптеки - БЕЛЫМ */
+  font-weight: 500;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.edit-box select {
+  width: 100%;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 10px 0;
+  outline: none;
+}
+
+/* 9. КНОПКА ЗАКРЫТЬ (внутри edit-box) */
+.edit-box button {
+  width: 100%;
+  padding: 8px;
+  cursor: pointer;
+  background: #ecf0f1;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.edit-box button:hover {
+  background: #bdc3c7;
+}
+
+/* 10. КРАСИВЫЙ СКРОЛЛБАР САЙДБАРА */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 10px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* КНОПКА СБРОСА */
+.reset-btn {
+  width: 100%;
+  padding: 8px;
+  background: #333;
+  border: 1px solid #444;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #ccc;
+  transition: 0.2s;
+}
+.reset-btn:hover {
+  background: #444;
+  color: #fff;
+}
