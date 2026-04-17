@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/pharma-map-pro/static/css/main.19c5530c.css",
+    "main.js": "/pharma-map-pro/static/js/main.6d986409.js",
+    "static/js/453.825386d9.chunk.js": "/pharma-map-pro/static/js/453.825386d9.chunk.js",
+    "index.html": "/pharma-map-pro/index.html",
+    "main.19c5530c.css.map": "/pharma-map-pro/static/css/main.19c5530c.css.map",
+    "main.6d986409.js.map": "/pharma-map-pro/static/js/main.6d986409.js.map",
+    "453.825386d9.chunk.js.map": "/pharma-map-pro/static/js/453.825386d9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.19c5530c.css",
+    "static/js/main.6d986409.js"
+  ]
+}
