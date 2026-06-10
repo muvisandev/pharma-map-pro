@@ -22,6 +22,8 @@ jobs:
 
       - name: npm install and build
         working-directory: frontend
+        env:
+          REACT_APP_YANDEX_MAPS_KEY: ${{ secrets.REACT_APP_YANDEX_MAPS_KEY }}
         run: |
           npm install --legacy-peer-deps
           npm run build
