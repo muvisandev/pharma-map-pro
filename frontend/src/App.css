@@ -194,16 +194,15 @@ input[type="file"]::file-selector-button:hover {
 }
 
 .info-tooltip {
-  position: absolute;
-  right: auto;
-  left: -260px;
-  top: 24px;
+  position: fixed;
+  right: 10px;
+  top: auto;
   background: #2c3e50;
   border: 1px solid #f1c40f;
   border-radius: 6px;
   padding: 10px 12px;
   z-index: 1000;
-  width: 280px;
+  width: 260px;
   font-size: 12px;
   color: #ecf0f1;
   line-height: 1.8;
