@@ -194,18 +194,17 @@ input[type="file"]::file-selector-button:hover {
 }
 
 .info-tooltip {
-  position: fixed;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
+  position: absolute;
+  left: 0;
+  top: 30px;
   background: #2c3e50;
   border: 1px solid #f1c40f;
   border-radius: 6px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   z-index: 1000;
-  width: 260px;
-  font-size: 12px;
+  width: 100%;
+  font-size: 11px;
   color: #ecf0f1;
-  line-height: 1.8;
+  line-height: 1.6;
   box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }

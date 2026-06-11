@@ -300,7 +300,7 @@ const memoizedPlacemarks = useMemo(() => {
               </button>
             </div>
 
-            <h4>3. Статусы
+            <h4 style={{ position: 'relative' }}>3. Статусы
               <button
                 className="info-btn"
                 onClick={() => setShowStatusInfo(!showStatusInfo)}
