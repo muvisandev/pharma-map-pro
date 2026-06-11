@@ -64,7 +64,7 @@ function App() {
   
   const clustererRef = useRef(null);
   const saveTimerRef = useRef(null);
-
+  const [showStatusInfo, setShowStatusInfo] = useState(false);
   const statuses = ["Готово", "Закрыто", "Подтверждено", "Готово NEW", "Закрыто NEW", "Подтверждено NEW"];
 
   // 1. Загрузка из LocalStorage
@@ -300,7 +300,25 @@ const memoizedPlacemarks = useMemo(() => {
               </button>
             </div>
 
-            <h4>3. Статусы</h4>
+            <h4>3. Статусы
+              <button
+                className="info-btn"
+                onClick={() => setShowStatusInfo(!showStatusInfo)}
+              >
+                i
+                {showStatusInfo && (
+                  <div className="info-tooltip">
+                  <div><b>Готово</b> — Аптека давно работает</div>
+                  <div><b>Закрыто</b> — Аптека работала раньше и теперь закрылась</div>
+                  <div><b>Подтверждено</b> — Аптека работает, но подтверждена только по данным (с прошлого квартала)</div>
+                  <div><b>Готово NEW</b> — Новая аптека, работает и проверена</div>
+                  <div><b>Закрыто NEW</b> — Аптека открылась и закрылась (в этом квартале)</div>
+                  <div><b>Подтверждено NEW</b> — Аптека новая и подтверждена только по данным (в этом квартале)</div>
+                  </div>
+                 )}
+              </button>
+            </h4>
+            
             <div className="filter-group">
               {statuses.map(s => (
                 <label key={s} className="checkbox-item">

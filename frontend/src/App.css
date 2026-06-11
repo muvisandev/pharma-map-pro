@@ -174,3 +174,37 @@ input[type="file"]::file-selector-button:hover {
   background: #444;
   color: #fff;
 }
+
+.info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #555;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  margin-left: 6px;
+  position: relative;
+  vertical-align: middle;
+}
+
+.info-tooltip {
+  position: absolute;
+  right: 0;
+  top: 24px;
+  background: #2c3e50;
+  border: 1px solid #f1c40f;
+  border-radius: 6px;
+  padding: 10px 12px;
+  z-index: 1000;
+  width: 280px;
+  font-size: 12px;
+  color: #ecf0f1;
+  line-height: 1.8;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
