@@ -195,8 +195,9 @@ input[type="file"]::file-selector-button:hover {
 
 .info-tooltip {
   position: fixed;
-  right: 10px;
-  top: auto;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   background: #2c3e50;
   border: 1px solid #f1c40f;
   border-radius: 6px;
