@@ -18,23 +18,29 @@ const PharmacyMarker = React.memo(({ ph, isActiveEmp, isActiveStat, onClick }) =
       geometry={[ph.lat, ph.lng]}
       onClick={onClick}
       properties={{
-        hintContent: ph['Наименование с вывески'],
+        hintContent: ph['наименование по 1С'] || ph['Наименование с вывески'],
         rawData: ph,
-        balloonContentHeader: `<b style="color:black">${ph['Наименование с вывески']}</b>`,
+        balloonContentHeader: `<b style="color:black">${ph['наименование по 1С'] || ph['Наименование с вывески']}</b>`,
         balloonContentBody: `
           <div style="color: black; font-size: 12px; min-width: 250px;">
             <b>Статус:</b> ${ph['Статус']}<br/>
-            <b>Адрес:</b> ${ph['Адрес'] || '—'}<br/>
+            <b>Регион:</b> ${ph['Регион'] || '—'}, ${ph['Нас. пункт'] === 'Нет' ? (ph['Город'] || '—') : (ph['Город'] === 'Нет' ? (ph['Нас. пункт'] || '—') : (ph['Нас. пункт'] || ph['Город'] || '—'))}<br/>
+            <b>Адрес:</b> ${ph['адрес по 1С'] || ph['Адрес'] || '—'}<br/>
+            <b>Категория:</b> ${[ph['Категория Товарооборота Байера'], ph['Категория по выкладке']].filter(Boolean).join(', ') || '—'}<br/>
+            <b>Сеть:</b> ${ph['Наименование сети'] || '—'}<br/>
+            <b>Юр. лицо:</b> ${[ph['Орг. форма'], ph['Юр. наимен.']].filter(Boolean).join(' ') || '—'}<br/>
+            <b>Телефон:</b> ${ph['Телефон'] || '—'}<br/>
             <hr/>
-            <b>Диапазон доли в OTC+БАД:</b> ${ph['Диапазон доли в OTC+БАД'] || '—'}<br/>
-            <b>Диапазон OTC+БАД КАСТОМ:</b> ${ph['Диапазон OTC+БАД КАСТОМ'] || '—'}<br/>
+            <b>Общий товарооборот:</b> ${ph['Диапазон товарооборота'] || '—'}<br/>
+            <b>Bayer CH:</b> ${ph['Диапазон доли в OTC+БАД'] || '—'}<br/>
+            <b>Товарооборот ОТС+БАД:</b> ${ph['Диапазон OTC+БАД КАСТОМ'] || '—'}<br/>
+            <b>Категория по СПА:</b> ${ph['Категория OTC+БАД КАСТОМ'] || '—'}<br/>
             <hr/>
             <b>Сотрудник:</b> ${ph['Сотрудник'] || 'Не назначен'}<br/>
-            <b>Сеть:</b> ${ph['Наименование сети'] || '—'}<br/>
-            <b>Юр. лицо:</b> ${ph['Юр. наимен.'] || '—'}<br/>
+            <b>Территория МП:</b> ${ph['Территория МП'] || '—'}<br/>
             <hr/>
             <small style="color: #666">
-              ID в СПА: ${ph['ИД в СПА']} | ExtID: ${ph['ExterbalID']}<br/>
+              ID в СПА: ${ph['ИД в СПА']} | ExtID: ${ph['Код 1 С']}<br/>
               Период: ${ph['Год']} г., ${ph['Квартал']} квартал
             </small>
           </div>
@@ -67,6 +73,8 @@ function App() {
   const infoButtonRef = useRef(null);
   const [showStatusInfo, setShowStatusInfo] = useState(false);
   const statuses = ["Готово", "Закрыто", "Подтверждено", "Готово NEW", "Закрыто NEW", "Подтверждено NEW"];
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRendering, setIsRendering] = useState(false);
 
   // 1. Загрузка из LocalStorage
   useEffect(() => {
@@ -138,43 +146,35 @@ function App() {
   };
 
   const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      const bstr = evt.target.result;
-      const wb = XLSX.read(bstr, { type: 'binary' });
-      const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "" });
-      const coordTracker = {};
-      const formattedData = data.map((item, index) => {
-      const originalLat = parseFloat(String(item['Широта']).replace(',', '.').trim());
-      const originalLng = parseFloat(String(item['Долгота']).replace(',', '.').trim());
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  setIsLoading(true);
+  const reader = new FileReader();
+  
+  reader.onload = (evt) => {
+    const bstr = evt.target.result;
+    const worker = new Worker(new URL('./fileWorker.js', import.meta.url));
+    
+  worker.onmessage = (event) => {
+  setPharmacies(event.data.formattedData);
+  setIsLoading(false);
+  setIsRendering(true);
+  setTimeout(() => setIsRendering(false), 3000); // убираем через 3 сек
+  worker.terminate();
+};
 
-      if (isNaN(originalLat) || isNaN(originalLng)) return null;
+    worker.onerror = (err) => {
+      console.error('Worker error:', err);
+      setIsLoading(false);
+      worker.terminate();
+    };
 
-      // Визуальное смещение — оригиналы не трогаем
-      let displayLat = originalLat;
-      let displayLng = originalLng;
+    worker.postMessage({ bstr });
+  };
 
-      const key = `${originalLat.toFixed(6)}-${originalLng.toFixed(6)}`;
-      if (coordTracker[key]) {
-       coordTracker[key] += 1;
-       displayLat += coordTracker[key] * 0.0002;
-       displayLng += coordTracker[key] * 0.0002;
-      } else {
-       coordTracker[key] = 1;
-      }
-
-      return {
-        ...item,            // 'Широта' и 'Долгота' из CRM — не тронуты
-       mapId: index,
-       lat: displayLat,    // только для карты
-        lng: displayLng,    // только для карты
-     };
-    }).filter(Boolean);
-         setPharmacies(formattedData);
-       };
-       reader.readAsBinaryString(file);
-     };
+  reader.readAsBinaryString(file);
+};
 
      const clearData = () => {
        if (window.confirm("Удалить все данные с карты и из памяти браузера?")) {
@@ -233,7 +233,7 @@ const memoizedPlacemarks = useMemo(() => {
               instanceRef={onClustererInit}
               // Стабильный ключ кластера
               key={showOnlyFiltered ? 'filtered' : 'all'} 
-              options={{ gridSize: 15, clusterHasBalloon: true, clusterBalloonContentLayout: 'cluster#balloonCarousel' }}
+              options={{ gridSize: 60, clusterHasBalloon: true, clusterBalloonContentLayout: 'cluster#balloonCarousel' }}
             >
               {memoizedPlacemarks}
             </Clusterer>
@@ -245,6 +245,22 @@ const memoizedPlacemarks = useMemo(() => {
         <div className="filter-group">
             <h4>1. База данных</h4>
             <input type="file" onChange={handleFileUpload} accept=".xlsx, .xls, .csv" style={{marginBottom: '10px', width: '100%'}} />
+              {isLoading && (
+                <div style={{
+                  textAlign: 'center', padding: '10px',
+                  color: '#f1c40f', fontSize: '13px'
+              }}>
+                  ⏳ Загрузка данных...
+                </div>
+                  )}
+                  {isRendering && (
+                    <div style={{
+                      textAlign: 'center', padding: '10px',
+                      color: '#f1c40f', fontSize: '13px'
+                     }}>
+                  🗺 Отображение точек на карте...
+                    </div>
+                    )}
             {pharmacies.length > 0 && (
               <>
                 <button onClick={handleDownload} style={{ width: '100%', padding: '10px', backgroundColor: '#27AE60', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold', marginBottom: '5px' }}>
@@ -260,7 +276,7 @@ const memoizedPlacemarks = useMemo(() => {
         {activePharmacy && (
             <div className="edit-box">
                 <h4 style={{border: 'none', margin: '0 0 10px 0'}}>Назначить сотрудника</h4>
-                <p className="pharmacy-name-title">📍 {activePharmacy['Наименование с вывески']}</p>
+                <p className="pharmacy-name-title">📍 {activePharmacy['наименование по 1С'] || activePharmacy['Наименование с вывески']}</p>
                 <select 
                     style={{ width: '100%', padding: '5px' }}
                     value={activePharmacy['Сотрудник'] || ""} 
