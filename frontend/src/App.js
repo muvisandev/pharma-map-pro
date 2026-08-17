@@ -198,22 +198,45 @@ const memoizedPlacemarks = useMemo(() => {
     ));
   }, [visiblePharmacies, selectedEmployee, selectedStatus]);
 
-    const onClustererInit = useCallback((instance) => {
-        if (!instance) return;
-        clustererRef.current = instance;
-        instance.createCluster = function (center, geoObjects) {
-         const cluster = instance.constructor.prototype.createCluster.call(this, center, geoObjects);
-          const hasActive = geoObjects.some(obj => {
-           const data = obj.properties.get('rawData');
-           return data?.['Сотрудник'] === selectedEmployee || data?.['Статус'] === selectedStatus;
-         });
-         cluster.options.set({
-            preset: hasActive ? 'islands#invertedYellowClusterIcons' : 'islands#invertedGrayClusterIcons',
-            clusterIconColor: hasActive ? '#FFD700' : '#7f8c8d'
-         });
-         return cluster;
-       };
-      }, [selectedEmployee, selectedStatus]);
+const onClustererInit = useCallback((instance) => {
+  if (!instance) return;
+  clustererRef.current = instance;
+  instance.createCluster = function (center, geoObjects) {
+    const cluster = instance.constructor.prototype.createCluster.call(this, center, geoObjects);
+
+    const hasActiveEmp = geoObjects.some(obj => {
+      const data = obj.properties.get('rawData');
+      return data?.['Сотрудник'] === selectedEmployee;
+    });
+
+    const hasActiveStat = geoObjects.some(obj => {
+      const data = obj.properties.get('rawData');
+      return data?.['Статус'] === selectedStatus;
+    });
+
+    let clusterColor = '#7f8c8d';
+    let clusterPreset = 'islands#invertedGrayClusterIcons';
+
+    if (hasActiveEmp) {
+      clusterColor = '#FFD700';
+      clusterPreset = 'islands#invertedYellowClusterIcons';
+    }
+
+    if (hasActiveStat) {
+      if (selectedStatus?.includes('Закрыто')) clusterColor = '#FF0000';
+      if (selectedStatus?.includes('Готово')) clusterColor = '#27AE60';
+      if (selectedStatus?.includes('Подтверждено')) clusterColor = '#27AE60';
+      clusterPreset = 'islands#invertedYellowClusterIcons';
+    }
+
+    cluster.options.set({
+      preset: clusterPreset,
+      clusterIconColor: clusterColor
+    });
+
+    return cluster;
+  };
+}, [selectedEmployee, selectedStatus]);
 
 
   return (
