@@ -242,7 +242,11 @@ const onClustererInit = useCallback((instance) => {
   return (
     <div className="main-container">
       <div className="map-container">
-        <YMaps query={{ apikey: YANDEX_MAPS_KEY, load: 'package.full' }}>
+        <YMaps query={{ 
+  apikey: YANDEX_MAPS_KEY, 
+  load: 'Map,Placemark,clusterer.addon.balloon,layout.ImageWithContent',
+  lang: 'ru_RU' 
+}}>
           <Map 
             state={{ ...mapState, controls: [] }} 
             onBoundsChange={(e) => {
