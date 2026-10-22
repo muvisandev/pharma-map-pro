@@ -208,3 +208,28 @@ input[type="file"]::file-selector-button:hover {
   line-height: 2;
   box-shadow: 0 4px 16px rgba(0,0,0,0.5);
 }
+
+
+.lang-switch {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.lang-btn {
+  flex: 1;
+  padding: 6px 0;
+  background: #34495e;
+  color: #ecf0f1;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.lang-btn.active {
+  background: #2c3e50;
+  color: #f1c40f;
+  border-color: #f1c40f;
+}
