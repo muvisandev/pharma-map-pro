@@ -270,7 +270,7 @@ const onClustererInit = useCallback((instance) => {
               instanceRef={onClustererInit}
               // Стабильный ключ кластера
               key={showOnlyFiltered ? 'filtered' : 'all'} 
-              options={{ gridSize: 45, clusterHasBalloon: true, clusterBalloonContentLayout: 'cluster#balloonCarousel' }}
+              options={{ gridSize: 20, clusterHasBalloon: true, clusterBalloonContentLayout: 'cluster#balloonCarousel' }}
             >
               {memoizedPlacemarks}
             </Clusterer>
